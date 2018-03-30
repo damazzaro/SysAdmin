@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "UploadFile";
+}
+
+<h2>UploadFile</h2>
+
+<form method="post" asp-action="UploadFile" enctype="multipart/form-data">
+    <input type="file" name="pic"/><br />
+    <input type="text" name="Name" /><br />
+    <input type="submit" value="Go" />
+
+</form>
+
+<label>@ViewData["SavedName"]</label>
+<img src="@ViewData["FileLocation"]" />
+<label>@ViewData["error"]</label>
+<embed src="@ViewData["FileLocation"]" width="800" height="1200" />
+
