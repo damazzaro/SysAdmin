@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using SysAdmin.Models;
 
@@ -16,10 +17,10 @@ namespace SysAdmin.Controllers
     public class HomeController : Controller
     {
 
-        private readonly IHostingEnvironment hostingEnv;
+        private readonly IHostingEnvironment _hostingEnvironment;
         public HomeController(IHostingEnvironment e)
         {
-            hostingEnv = e;
+            _hostingEnvironment = e;
         }
 
         public IActionResult Index()
@@ -44,23 +45,30 @@ namespace SysAdmin.Controllers
             return View();
         }
 
-        public IActionResult UploadFile(string SavedName, IFormFile pic)
+        public IActionResult UploadFile(IFormFile FileUpload, string FileName, string FileDescription)
         {
-            ViewData["SavedName"] = SavedName;
+            Console.WriteLine("--------------------------------RAN COMMAND");
 
-            if(pic != null)
+            if (FileUpload != null)
             {
+                Console.WriteLine("--------------------------------NOT NULL");
 
-                if (!System.IO.File.Exists(Path.Combine(hostingEnv.WebRootPath, User.Identity.Name + ".pdf")))
+                if (!System.IO.File.Exists(Path.Combine(_hostingEnvironment.WebRootPath, User.Identity.Name + FileName + ".pdf")))
                 {
-                    var FileName = Path.Combine(hostingEnv.WebRootPath, User.Identity.Name + ".pdf");
-                    pic.CopyTo(new FileStream(FileName, FileMode.Create));
+                    Console.WriteLine("--------------------------------DOESNT EXIST");
 
-                    ViewData["FileLocation"] = "/" + User.Identity.Name + ".pdf";
-                    ViewData["Error"] = "";
+                    var fileStream = Path.Combine(_hostingEnvironment.WebRootPath, User.Identity.Name + FileName + ".pdf");
+                    FileUpload.CopyTo(new FileStream(fileStream, FileMode.Create));
+
+                    Console.WriteLine("--------------------------------UPLOADED FILE");
+
+                    ViewData["SavedName"] = User.Identity.Name + FileName + ".pdf";
+                    ViewData["FileLocation"] = "/" + User.Identity.Name + FileName + ".pdf";
+                    ViewData["SavedDescription"] = FileDescription;
                 } else
                 {
-                    ViewData["Error"] = "Woops, this file alrady exists!";
+                    ModelState.AddModelError("FileName", "Woops, this file already exists!");
+
                 }
             }
 
