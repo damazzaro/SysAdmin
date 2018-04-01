@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,27 @@ namespace SysAdmin.Controllers
         public ActionResult ListBlobs()
         {
             return View(_blobsRepository.ListBlobsNames());
+        }
+
+        public async Task<ActionResult> DownloadAsync(string FileName)
+        {
+            MailAddress emailAddress = new MailAddress(User.Identity.Name);
+            string Username = emailAddress.User;
+            string blobName = Username + FileName;
+
+            if (await _blobsRepository.DoesBlobExistAsync(blobName))
+            {
+
+                await _blobsRepository.DownloadBlobAsync(blobName);
+
+                TempData["DownloadSuccess"] = "Success! You've downloaded the file. Check your documents folder";
+            } else
+            {
+                TempData["DownloadFail"] = "There was trouble downloading the file. Sorry we tried!";
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
+
         }
 
 

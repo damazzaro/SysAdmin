@@ -11,6 +11,20 @@
 
 <h2>@Displayname's File</h2>
 
+<form asp-controller="Blobs" asp-action="DownloadAsync">
+    <input type="hidden" name="FileName" asp-for="@Model.Files.FileName" />
+    <a class="btn btn-default" asp-controller="Files" asp-action="Index">Back</a>
+    <input type="submit" class="btn btn-success" value="Download" />
+</form>
+
+<br />
+<p class="text-success">
+    @TempData["DownloadSuccess"]
+</p>
+<p class="text-danger">
+    @TempData["DownloadFail"]
+</p>
+
 <div>
     <hr />
     <dl class="dl-horizontal">
@@ -86,20 +100,16 @@
                 <td class="col-sm-9">
                     @Html.DisplayFor(modelItem => comment.CommentText)
                 </td>
-                @if(comment.UserEmail == Username)
+                @if (comment.UserEmail == Username)
                 {
-                <td>
-                    <form asp-controller="Comments" asp-action="Delete">
-                        <input type="hidden" name="id" asp-for="@comment.CommentId" />
-                        <input type="submit" class="btn btn-danger" value="Delete"/>
-                    </form>
-                </td>
+                    <td>
+                        <form asp-controller="Comments" asp-action="Delete">
+                            <input type="hidden" name="id" asp-for="@comment.CommentId" />
+                            <input type="submit" class="btn btn-danger" value="Delete" />
+                        </form>
+                    </td>
                 }
             </tr>
         }
     </tbody>
 </table>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>

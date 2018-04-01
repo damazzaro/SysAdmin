@@ -1,62 +1,81 @@
 ﻿@model IEnumerable<SysAdmin.Models.Files>
 
 @{
+    @using System.Net.Mail;
+
     ViewData["Title"] = "Index";
+    MailAddress emailAddress = new MailAddress(User.Identity.Name);
+    var Username = emailAddress.User;
+    var Displayname = emailAddress.User.First().ToString().ToUpper() + Username.Substring(1);
 }
 
-<h2>Index</h2>
+<h2>Uploaded Files</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-default" asp-controller="Home" asp-action="Index">Back</a>
+    <a class="btn btn-success" asp-action="Create">Create New</a>
 </p>
+
+<p class="text-success">
+    @TempData["DownloadSuccess"]
+</p>
+<p class="text-danger">
+    @TempData["DownloadFail"]
+</p>
+
 <table class="table">
     <thead>
         <tr>
-                <th class="col-md-2">
-                    @Html.DisplayNameFor(model => model.FileName)
-                </th>
-                <th class="col-md-2">
-                    @Html.DisplayNameFor(model => model.UserEmail)
-                </th>
-                <th class="col-md-5">
-                    @Html.DisplayNameFor(model => model.FileDescription)
-                </th>
-                <th class="col-md-1">
-                    @Html.DisplayNameFor(model => model.FileVerified)
-                </th>
+            <th class="col-md-2">
+                @Html.DisplayNameFor(model => model.FileName)
+            </th>
+            <th class="col-md-2">
+                @Html.DisplayNameFor(model => model.UserEmail)
+            </th>
+            <th class="col-md-5">
+                @Html.DisplayNameFor(model => model.FileDescription)
+            </th>
+            <th class="col-md-1">
+                @Html.DisplayNameFor(model => model.FileVerified)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FileDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FileVerified)
-            </td>
-            @if(item.UserEmail+"@oakland.edu" == User.Identity.Name)
-            {
-            <td>
-                <a asp-action="Edit" class="btn btn-default glyphicon glyphicon-pencil" asp-route-id="@item.FileId"></a>
-                <a asp-action="Details" class="btn btn-warning glyphicon glyphicon-search" asp-route-id="@item.FileId"></a>
-                <a asp-action="Delete" class="btn btn-danger glyphicon glyphicon-trash" asp-route-id="@item.FileId"></a>
-            </td>
-            } else
-            {
-            <td>
-                <button class="btn btn-success">Download</button>
-                <a asp-action="Details" class="btn btn-warning glyphicon glyphicon-search" asp-route-id="@item.FileId"></a>
-            </td>
-            }
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FileVerified)
+                </td>
+                @if (item.UserEmail + "@oakland.edu" == User.Identity.Name)
+                {
+                    <td>
+                        <a asp-action="Edit" class="btn btn-default glyphicon glyphicon-pencil" asp-route-id="@item.FileId"></a>
+                        <a asp-action="Details" class="btn btn-warning glyphicon glyphicon-search" asp-route-id="@item.FileId"></a>
+                        <a asp-action="Delete" class="btn btn-danger glyphicon glyphicon-trash" asp-route-id="@item.FileId"></a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <form asp-controller="Blobs" asp-action="DownloadAsync">
+                            <input type="hidden" name="FileName" asp-for="@item.FileName" />
+                            <a asp-action="Details" class="btn btn-warning glyphicon glyphicon-search" asp-route-id="@item.FileId"></a>
+                            <input type="submit" class="btn btn-success" value="Download" />
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
     </tbody>
 </table>
