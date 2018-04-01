@@ -7,6 +7,7 @@ namespace SysAdmin.Models
     public partial class SocialFilesContext : DbContext
     {
         public virtual DbSet<Files> Files { get; set; }
+        public virtual DbSet<Comments> Comments { get; set; }
 
         public SocialFilesContext(DbContextOptions<SocialFilesContext> options)
             : base(options)
@@ -32,6 +33,27 @@ namespace SysAdmin.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.FileVerified).HasColumnName("file_verified");
+
+                entity.Property(e => e.UserEmail)
+                    .IsRequired()
+                    .HasColumnName("user_email")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Comments>(entity =>
+            {
+                entity.HasKey(e => e.CommentId);
+
+                entity.Property(e => e.CommentId).HasColumnName("comment_id");
+
+                entity.Property(e => e.CommentText)
+                    .IsRequired()
+                    .HasColumnName("comment_text")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FileId).HasColumnName("file_id");
 
                 entity.Property(e => e.UserEmail)
                     .IsRequired()

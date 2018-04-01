@@ -1,4 +1,4 @@
-﻿@model SysAdmin.Models.Files
+﻿@model SysAdmin.Models.FilesCommentsViewModel
 
 @{
     @using System.Net.Mail;
@@ -6,42 +6,100 @@
     ViewData["Title"] = "Details";
     MailAddress emailAddress = new MailAddress(User.Identity.Name);
     var Username = emailAddress.User;
+    var Displayname = emailAddress.User.First().ToString().ToUpper() + Username.Substring(1);
 }
 
-<h2>Details</h2>
+<h2>@Displayname's File</h2>
 
 <div>
-    <h4>Files</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.UserEmail)
+            @Html.DisplayNameFor(model => model.Files.UserEmail)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.UserEmail)
+            @Html.DisplayFor(model => model.Files.UserEmail)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.FileName)
+            @Html.DisplayNameFor(model => model.Files.FileName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FileName)
+            @Html.DisplayFor(model => model.Files.FileName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.FileDescription)
+            @Html.DisplayNameFor(model => model.Files.FileDescription)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FileDescription)
+            @Html.DisplayFor(model => model.Files.FileDescription)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.FileVerified)
+            @Html.DisplayNameFor(model => model.Files.FileVerified)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FileVerified)
+            @Html.DisplayFor(model => model.Files.FileVerified)
         </dd>
     </dl>
 </div>
-<embed src="https://dmsysadmin.blob.core.windows.net/socialfiles/@Username@Model.FileName" width="100%" height="500">
+<embed src="https://dmsysadmin.blob.core.windows.net/socialfiles/@Username@Model.Files.FileName" width="100%" height="500">
+
+<hr />
+<h4>Leave a Comment:</h4>
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" asp-controller="Comments">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <textarea name="CommentText" class="form-control"></textarea>
+                <span asp-validation-for="Comment.CommentText" class="text-danger"></span>
+
+
+                <input hidden value="@Username" name="UserEmail" />
+                <input hidden value="@Model.Files.FileId" name="FileId" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit Comment" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
+<h4>Comments</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Comment Author
+            </th>
+            <th>
+                Comment
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model.Comments)
+        {
+            <tr>
+                <td class="col-sm-2">
+                    @Html.DisplayFor(modelItem => comment.UserEmail)
+                </td>
+                <td class="col-sm-9">
+                    @Html.DisplayFor(modelItem => comment.CommentText)
+                </td>
+                @if(comment.UserEmail == Username)
+                {
+                <td>
+                    <form asp-controller="Comments" asp-action="Delete">
+                        <input type="hidden" name="id" asp-for="@comment.CommentId" />
+                        <input type="submit" class="btn btn-danger" value="Delete"/>
+                    </form>
+                </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.FileId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

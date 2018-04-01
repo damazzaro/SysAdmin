@@ -35,6 +35,8 @@ namespace SysAdmin.Controllers
         // GET: Files/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            FilesCommentsViewModel filesCommentsViewModel = new FilesCommentsViewModel();
+
             if (id == null)
             {
                 return NotFound();
@@ -47,9 +49,13 @@ namespace SysAdmin.Controllers
                 return NotFound();
             }
 
-            ViewData["FilePath"] = _hostingEnvironment.WebRootPath + "\\uploads\\" + User.Identity.Name + files.FileName + ".pdf";
+            var comments = await (from c in _context.Comments where c.FileId == id select c).ToListAsync();
 
-            return View(files);
+            filesCommentsViewModel.Files = files;
+            filesCommentsViewModel.Comments = comments;
+            filesCommentsViewModel.Comment = new Comments();
+
+            return View(filesCommentsViewModel);
         }
 
         // GET: Files/Create
