@@ -2,12 +2,35 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SysAdmin.Models;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SysAdmin.Controllers
 {
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
+        private readonly SocialFilesContext _context;
+
+        public AccountController(SocialFilesContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+
+            MailAddress emailAddress = new MailAddress(User.Identity.Name);
+            string Username = emailAddress.User;
+
+            var filesToList = await (from f in _context.Files where f.UserEmail == Username select f).ToListAsync();
+
+            return View(filesToList);
+        }
+
         [HttpGet]
         public IActionResult SignIn()
         {

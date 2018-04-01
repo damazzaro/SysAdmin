@@ -75,6 +75,7 @@ namespace SysAdmin.Repositories
 
             CloudBlobContainer container = GetCloudBlobContainer();
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(Name);
+            blockBlob.Properties.ContentType = File.ContentType;
 
             using (var fileStream = File.OpenReadStream())
             {
