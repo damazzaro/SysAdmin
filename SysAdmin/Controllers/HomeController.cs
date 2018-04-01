@@ -9,7 +9,7 @@ using SysAdmin.Models;
 
 namespace SysAdmin.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
 

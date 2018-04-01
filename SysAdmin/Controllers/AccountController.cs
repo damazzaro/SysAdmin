@@ -7,10 +7,12 @@ using SysAdmin.Models;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SysAdmin.Controllers
 {
     [Route("[controller]/[action]")]
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly SocialFilesContext _context;

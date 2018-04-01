@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using SysAdmin.Repositories;
 
 namespace SysAdmin.Controllers
 {
+    [Authorize]
     public class FilesController : Controller
     {
         private readonly SocialFilesContext _context;

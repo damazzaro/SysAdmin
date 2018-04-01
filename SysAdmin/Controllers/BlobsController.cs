@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Azure;
@@ -13,6 +14,7 @@ using SysAdmin.Repositories;
 
 namespace SysAdmin.Controllers
 {
+    [Authorize]
     public class BlobsController : Controller
     {
         BlobsRepository _blobsRepository = new BlobsRepository();
