@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Microsoft.EntityFrameworkCore;
+using SysAdmin.Models;
+
 namespace SysAdmin
 {
     public class Startup
@@ -33,6 +36,11 @@ namespace SysAdmin
             .AddCookie();
 
             services.AddMvc();
+
+            var connection = @"Server=tcp:dmsysadmin.database.windows.net,1433;Initial Catalog=SocialFiles;Persist Security Info=False;User ID=dmsysadmin;Password=Goldengrizzlies123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+            //var connection = @"Server=(localdb)\mssqllocaldb;Database=SocialFiles;Trusted_Connection=True;ConnectRetryCount=0";
+            services.AddDbContext<SocialFilesContext>(options => options.UseSqlServer(connection));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,47 @@
+﻿@model SysAdmin.Models.Files
+
+@{
+    @using System.Net.Mail;
+
+    ViewData["Title"] = "Details";
+    MailAddress emailAddress = new MailAddress(User.Identity.Name);
+    var Username = emailAddress.User;
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Files</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserEmail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserEmail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FileName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FileName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FileDescription)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FileDescription)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FileVerified)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FileVerified)
+        </dd>
+    </dl>
+</div>
+<embed src="https://dmsysadmin.blob.core.windows.net/socialfiles/@Username@Model.FileName" width="500" height="375">
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.FileId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
