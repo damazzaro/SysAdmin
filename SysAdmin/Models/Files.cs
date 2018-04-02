@@ -17,6 +17,7 @@ namespace SysAdmin.Models
 
         [Required(ErrorMessage = "You must specify a file description")]
         [DisplayName("File Description")]
+        [MaxLength(250, ErrorMessage = "The description may not be over 250 characters")]
         public string FileDescription { get; set; }
 
         public bool FileVerified { get; set; }

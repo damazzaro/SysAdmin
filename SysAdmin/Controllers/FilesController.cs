@@ -83,7 +83,7 @@ namespace SysAdmin.Controllers
                     MailAddress emailAddress = new MailAddress(User.Identity.Name);
                     string Username = emailAddress.User;
 
-                    if (!await _blobReposiory.DoesBlobExistAsync(Username + FileUploaded.FileName))
+                    if (!await _blobReposiory.DoesBlobExistAsync(Username + files.FileName + fileExtension))
                     {
 
                         files.UserEmail = Username;
@@ -127,6 +127,9 @@ namespace SysAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("FileId,UserEmail,FileName,FileDescription,FileVerified")] Files files)
         {
+            MailAddress emailAddress = new MailAddress(User.Identity.Name);
+            string Username = emailAddress.User;
+
             if (id != files.FileId)
             {
                 return NotFound();
@@ -134,8 +137,13 @@ namespace SysAdmin.Controllers
 
             if (ModelState.IsValid)
             {
+
+                var fileReference = await _context.Files.AsNoTracking().SingleOrDefaultAsync(f => f.FileId == files.FileId);
+                await _blobReposiory.RenameBlobAsync(Username + files.FileName, Username + fileReference.FileName);
+
                 try
                 {
+
                     _context.Update(files);
                     await _context.SaveChangesAsync();
                 }
@@ -178,9 +186,17 @@ namespace SysAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            MailAddress emailAddress = new MailAddress(User.Identity.Name);
+            string Username = emailAddress.User;
+
+            var fileReference = await _context.Files.SingleOrDefaultAsync(f => f.FileId == id);
+
             var files = await _context.Files.SingleOrDefaultAsync(m => m.FileId == id);
             _context.Files.Remove(files);
             await _context.SaveChangesAsync();
+
+            await _blobReposiory.DeleteBlobAsync(Username + fileReference.FileName);
+
             return RedirectToAction(nameof(Index));
         }
 

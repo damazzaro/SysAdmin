@@ -19,6 +19,7 @@ namespace SysAdmin.Controllers
     {
         BlobsRepository _blobsRepository = new BlobsRepository();
 
+
         public IActionResult Index()
         {
             return View();
@@ -27,6 +28,14 @@ namespace SysAdmin.Controllers
         public ActionResult ListBlobs()
         {
             return View(_blobsRepository.ListBlobsNames());
+        }
+
+        public string GetUsername()
+        {
+            MailAddress emailAddress = new MailAddress(User.Identity.Name);
+            string Username = emailAddress.User;
+
+            return Username;
         }
 
         public async Task<ActionResult> DownloadAsync(string FileName)

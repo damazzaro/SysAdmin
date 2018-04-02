@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -53,19 +54,19 @@ namespace SysAdmin.Repositories
             return blobNames;
         }
 
-        public async Task DownloadBlobAsync(string FileName)
+        public async Task DownloadBlobAsync(string Name)
         {
             CloudBlobContainer container = GetCloudBlobContainer();
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(FileName);
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(Name);
 
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), FileName);
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Name);
             using (var fileStream = System.IO.File.OpenWrite(path))
             {
                 await blockBlob.DownloadToStreamAsync(fileStream);
             }
         }
 
-        public async Task<bool> UploadBlobAsync(IFormFile File, String Name)
+        public async Task<bool> UploadBlobAsync(IFormFile File, string Name)
         {
 
             if (File == null)
@@ -85,8 +86,42 @@ namespace SysAdmin.Repositories
             return true;
         }
 
+        public async Task<bool> DeleteBlobAsync(string Name)
+        {
+            CloudBlobContainer container = GetCloudBlobContainer();
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(Name);
+
+
+            await blockBlob.DeleteIfExistsAsync();
+
+            return true;
+        }
+
+        public async Task<bool> RenameBlobAsync(string NewName, string OldName)
+        {
+            CloudBlobContainer container = GetCloudBlobContainer();
+            CloudBlockBlob blobCopy = container.GetBlockBlobReference(NewName);
+
+            if (!await blobCopy.ExistsAsync())
+            {
+                CloudBlockBlob blob = container.GetBlockBlobReference(OldName);
+
+                if (await blob.ExistsAsync())
+                {
+                    await blobCopy.StartCopyAsync(blob);
+                    await blob.DeleteIfExistsAsync();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public async Task<bool> DoesBlobExistAsync(string Name)
         {
+
+            Console.WriteLine("-----------------------------------------------" + Name);
+
             CloudBlobContainer container = GetCloudBlobContainer();
             CloudBlockBlob existingBlob = container.GetBlockBlobReference(Name);
 

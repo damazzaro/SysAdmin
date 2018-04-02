@@ -63,7 +63,7 @@
         <form asp-action="Create" asp-controller="Comments">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <textarea name="CommentText" class="form-control"></textarea>
+                <textarea maxlength="500" name="CommentText" class="form-control"></textarea>
                 <span asp-validation-for="Comment.CommentText" class="text-danger"></span>
 
 
