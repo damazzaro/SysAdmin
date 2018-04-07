@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.Azure;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using SysAdmin.Repositories;
 
@@ -17,6 +11,7 @@ namespace SysAdmin.Controllers
     [Authorize]
     public class BlobsController : Controller
     {
+        IHttpContextAccessor _httpAccessor = new HttpContextAccessor();
         BlobsRepository _blobsRepository = new BlobsRepository();
 
 
@@ -47,10 +42,15 @@ namespace SysAdmin.Controllers
             if (await _blobsRepository.DoesBlobExistAsync(blobName))
             {
 
-                await _blobsRepository.DownloadBlobAsync(blobName);
+                //await _blobsRepository.DownloadBlobAsync(blobName);
+            
+                var fileContent = new System.Net.WebClient().DownloadData("https://dmsysadmin.blob.core.windows.net/socialfiles/" + blobName);
+                TempData["DownloadSuccess"] = "Success! You've downloaded the file. Yay exciting!";
 
-                TempData["DownloadSuccess"] = "Success! You've downloaded the file. Check your documents folder";
-            } else
+                return File(fileContent, "application/octet-stream", blobName);
+
+            }
+            else
             {
                 TempData["DownloadFail"] = "There was trouble downloading the file. Sorry we tried!";
             }

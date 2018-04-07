@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Mail;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace SysAdmin.Repositories
 {
@@ -16,7 +14,7 @@ namespace SysAdmin.Repositories
         string ConnectionString = "DefaultEndpointsProtocol=https;AccountName=dmsysadmin;AccountKey=rLOkasSvakqO5lGqKdbqMrq1k8gBl5QpfB4HFJJDx99WOxmOgvkbE1MXNA5p8+7vTesQBRR9DPL7Xe/K/kNoVw==;EndpointSuffix=core.windows.net";
 
 
-        private CloudBlobContainer GetCloudBlobContainer()
+        public CloudBlobContainer GetCloudBlobContainer()
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConnectionString);
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
@@ -119,8 +117,6 @@ namespace SysAdmin.Repositories
 
         public async Task<bool> DoesBlobExistAsync(string Name)
         {
-
-            Console.WriteLine("-----------------------------------------------" + Name);
 
             CloudBlobContainer container = GetCloudBlobContainer();
             CloudBlockBlob existingBlob = container.GetBlockBlobReference(Name);
