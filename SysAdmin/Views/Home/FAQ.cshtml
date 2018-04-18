@@ -47,7 +47,7 @@
                 <div class="panel-body">
                     <h5><span class="label label-primary">Answer</span></h5>
                     <p>
-                        Once authenticated you can access the file upload on by pressing {file upload button} blah blah
+                        Once authenticated you can access the file upload on by pressing "Files" then clicking the "Create New" button
                     </p>
                 </div>
             </div>
@@ -64,6 +64,59 @@
                     <p>
                         Come on...just click download already. It's not that complicated
                     </p>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default ">
+            <div class="panel-heading accordion-toggle collapsed question-toggle" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question4">
+                <h4 class="panel-title">
+                    <a href="#" class="ing">Q: How are all these services connected? and how is the project programmed?</a>
+                </h4>
+            </div>
+            <div id="question4" class="panel-collapse collapse" style="height: 0px;">
+                <div class="panel-body">
+                    <h5><span class="label label-primary">Answer</span></h5>
+                    <p>I dont' think it would be appropriate to go over every class and explain every method as that would be tiring on both ends. The gist of this is that we use ASP.NET framework with C#, CSS, HTML, JS, etc. This helps us connect all the services together seamlessly</p>
+                    <a href="https://github.com/damazzaro/SysAdmin">Github Link</a>
+                    <p>
+                        Now onto the services:
+                    </p>
+                    
+                    <p>
+                        1. Our single sign on is authenticated through microsoft 365 servers in conjunction with Azure Active Directory. If your office 365 email does have end with oakland.edu, you will not be able to access our files portion of the website
+                    </p>
+                    <p>
+                        <img src="https://i.imgur.com/iELoUSK.png" />
+                    </p>
+                    <p>
+                        You then need to add a redirect in the azure portal (First you must create an App Service...kind of obvious). Then navigate to: Azure Acvtive Directory -> Then set your directory if it not already done. 
+                    </p>
+                    <p>
+                        2. Our SQL database is hosted through Azure. To do this you first must create an SQL server with azure, then you can create a SQL database through azure.
+                    </p>
+                    <p>
+                        <img src="https://imgur.com/SIbPygK.png"/>
+                    </p>
+                    <p>
+                        Enter in the fields however you'd like, then bam, created. Obviously then you must use the connection string to connect to the DB in the actual code itself. That can be found in <a href="https://github.com/damazzaro/SysAdmin/blob/master/SysAdmin/Models/SocialFilesContext.cs">Database File</a> and  <a href="https://github.com/damazzaro/SysAdmin/blob/master/SysAdmin/appsettings.json">App Settings File</a>
+
+                        It's then simple programing from there to get and post values to the database
+                    </p>
+                    <p>
+                        3. Our cloud storage (Blob storage) is also hosted through azure. First you must create the actual storage through the azure portal. You then must create a container (whatever name you want) Then you can actually connect it to your project
+                    </p>
+                    <p>
+                        <img src="https://imgur.com/0rS876x.png" />
+                    </p>
+
+                    <p>
+                        Then you can download async and upload azync through the <a href="https://github.com/damazzaro/SysAdmin/blob/master/SysAdmin/Repositories/BlobsRepository.cs">BlobRepository</a> that I created. This uses the connection string.
+                    </p>
+
+                    <p>
+                        Really most of the project is actual programming but we did implement all the items needed. Azure just made this so much easier because it gives us redundancy, load balancing, and everything else we'd need to ensure high uptime. Highly would recommend Azure in the future. Possibly make it a optional homework as you can really do a lot with $5 a month.
+                    </p>
+
                 </div>
             </div>
         </div>

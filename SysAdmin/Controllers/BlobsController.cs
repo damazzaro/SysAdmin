@@ -11,7 +11,6 @@ namespace SysAdmin.Controllers
     [Authorize]
     public class BlobsController : Controller
     {
-        IHttpContextAccessor _httpAccessor = new HttpContextAccessor();
         BlobsRepository _blobsRepository = new BlobsRepository();
 
 

@@ -14,7 +14,7 @@ namespace SysAdmin.Repositories
         string ConnectionString = "DefaultEndpointsProtocol=https;AccountName=dmsysadmin;AccountKey=rLOkasSvakqO5lGqKdbqMrq1k8gBl5QpfB4HFJJDx99WOxmOgvkbE1MXNA5p8+7vTesQBRR9DPL7Xe/K/kNoVw==;EndpointSuffix=core.windows.net";
 
 
-        public CloudBlobContainer GetCloudBlobContainer()
+        private CloudBlobContainer GetCloudBlobContainer()
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConnectionString);
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
